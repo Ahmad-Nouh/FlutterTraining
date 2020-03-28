@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/Statistic.dart';
 import 'package:flutter_app/src/home/table.dart';
@@ -61,7 +62,9 @@ class MyHomeState extends State<MyHome> {
     List<Statistic> decodedData = [];
     List<dynamic> rows = data['Countries'];
     rows.forEach((row) {
-      decodedData.add(new Statistic.fromJson(row));
+      if (row['Country'].toString().length > 0) {
+        decodedData.add(new Statistic.fromJson(row));
+      }
     });
 
     return decodedData;
@@ -77,12 +80,18 @@ class MyHomeState extends State<MyHome> {
           case ConnectionState.waiting:
             print(snapshot.data);
             return Dialog(
-            child: Row(
-              children: <Widget>[
-                CircularProgressIndicator(),
-                Text('Please Wait..')
-              ],
-            ),
+            child: Container(
+              child: Row(
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  Container(
+                    child: Text('Please Wait..'),
+                    margin: EdgeInsets.only(left: 20),
+                  )
+                ],
+              ),
+              padding: EdgeInsets.all(30.0),
+            )
           );
           case ConnectionState.done:
           case ConnectionState.active:

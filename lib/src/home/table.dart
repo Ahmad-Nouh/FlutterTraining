@@ -6,10 +6,10 @@ class SummaryTable {
 
   final List<String> columns = [
     'Country',
-    'NewConfirmed',
-    'TotalConfirmed',
-    'NewDeaths',
-    'TotalDeaths',
+//    'NewConfirmed',
+    'Total Confirmed',
+//    'NewDeaths',
+    'Total Deaths',
 //    'NewRecovered',
 //    'TotalRecovered'
   ];
@@ -29,11 +29,14 @@ class SummaryTable {
       return Column(
           children: <Widget>[
             Container(
-              child: Text(column),
+              child: Text(column, textAlign: TextAlign.center,),
               padding: EdgeInsets.all(5),
+              margin: EdgeInsets.all(10),
+              color: Colors.indigo,
+              alignment: Alignment.center,
             ),
           ],
-          crossAxisAlignment: CrossAxisAlignment.stretch
+          crossAxisAlignment: CrossAxisAlignment.stretch,
       );
     }).toList();
     return [
@@ -47,44 +50,50 @@ class SummaryTable {
           Column(
               children: <Widget>[
                 Container(
-                  child: Text(data.country),
+                  child: Text(data.country, textAlign: TextAlign.center,),
                   padding: EdgeInsets.all(5),
+                  margin: EdgeInsets.all(10),
+                  alignment: Alignment.center,
                 ),
               ],
               crossAxisAlignment: CrossAxisAlignment.stretch
           ),
+//          Column(
+//              children: <Widget>[
+//                Container(
+//                  child: Text(data.newConfirmed.toString()),
+//                  padding: EdgeInsets.all(5),
+//                ),
+//              ],
+//              crossAxisAlignment: CrossAxisAlignment.stretch
+//          ),
           Column(
               children: <Widget>[
                 Container(
-                  child: Text(data.newConfirmed.toString()),
+                  child: Text(data.totalConfirmed.toString(), textAlign: TextAlign.center, ),
                   padding: EdgeInsets.all(5),
+                  margin: EdgeInsets.all(10),
+                  alignment: Alignment.center,
                 ),
               ],
               crossAxisAlignment: CrossAxisAlignment.stretch
           ),
+//          Column(
+//              children: <Widget>[
+//                Container(
+//                  child: Text(data.newDeaths.toString()),
+//                  padding: EdgeInsets.all(5),
+//                ),
+//              ],
+//              crossAxisAlignment: CrossAxisAlignment.stretch
+//          ),
           Column(
               children: <Widget>[
                 Container(
-                  child: Text(data.totalConfirmed.toString()),
+                  child: Text(data.totalDeaths.toString(), textAlign: TextAlign.center,),
                   padding: EdgeInsets.all(5),
-                ),
-              ],
-              crossAxisAlignment: CrossAxisAlignment.stretch
-          ),
-          Column(
-              children: <Widget>[
-                Container(
-                  child: Text(data.newDeaths.toString()),
-                  padding: EdgeInsets.all(5),
-                ),
-              ],
-              crossAxisAlignment: CrossAxisAlignment.stretch
-          ),
-          Column(
-              children: <Widget>[
-                Container(
-                  child: Text(data.totalDeaths.toString()),
-                  padding: EdgeInsets.all(5),
+                  margin: EdgeInsets.all(10),
+                  alignment: Alignment.center,
                 ),
               ],
               crossAxisAlignment: CrossAxisAlignment.stretch

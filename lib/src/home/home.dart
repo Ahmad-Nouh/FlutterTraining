@@ -99,7 +99,7 @@ class MyHomeState extends State<MyHome> {
           case ConnectionState.done:
           case ConnectionState.active:
             this.countriesStatistics = decodeData(json.decode(snapshot.data.body));
-            return SingleChildScrollView(child: SummaryTable(this.countriesStatistics),);
+            return SingleChildScrollView(child: SummaryTable(data: this.countriesStatistics,));
           case ConnectionState.none:
             return Center(child: Text('Nothing to show'),);
           default:
@@ -122,9 +122,13 @@ class MyHomeState extends State<MyHome> {
                   hintText: 'Search By Country Name...'
                 ),
                 onChanged: (String text) {
-                  SummaryTable.of(context).updateTableData(
-                      this.countriesStatistics.where((Statistic item) => item.country.startsWith(text)).toList()
-                  );
+                  var childKey = GlobalKey<SummaryTableState>();
+                  SummaryTable(key: childKey,);
+                  setState(() {
+                    childKey.currentState.updateTableData(
+                        this.countriesStatistics.where((Statistic item) => item.country.toLowerCase().startsWith(text)).toList()
+                    );
+                  });
                 },
               ),
           backgroundColor: Colors.blue,

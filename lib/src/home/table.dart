@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/Statistic.dart';
 
 class SummaryTable extends StatefulWidget {
-  static SummaryTableState of(BuildContext context) => context.findAncestorStateOfType<SummaryTableState>();
-
   final List<Statistic> data;
 
-  SummaryTable(this.data);
+  SummaryTable({Key key, this.data}): super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -38,7 +36,7 @@ class SummaryTableState extends State<SummaryTable> {
               child: Text(column, textAlign: TextAlign.center,),
               padding: EdgeInsets.all(5),
               margin: EdgeInsets.all(10),
-              color: Colors.indigo,
+              color: Colors.blue,
               alignment: Alignment.center,
             ),
           ],

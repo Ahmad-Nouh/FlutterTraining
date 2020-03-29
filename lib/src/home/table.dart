@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/Statistic.dart';
 
-class SummaryTable {
-  Table _instance;
+class SummaryTable extends StatefulWidget {
+  static SummaryTableState of(BuildContext context) => context.findAncestorStateOfType<SummaryTableState>();
+
+  final List<Statistic> data;
+
+  SummaryTable(this.data);
+
+  @override
+  State<StatefulWidget> createState() {
+    return SummaryTableState(this.data);
+  }
+
+}
+
+class SummaryTableState extends State<SummaryTable> {
+  List<Statistic> data = [];
 
   final List<String> columns = [
     'Country',
@@ -14,15 +28,7 @@ class SummaryTable {
 //    'TotalRecovered'
   ];
 
-  SummaryTable(List<Statistic> data) {
-    List<TableRow> rows = setupHeader() + data.map((Statistic element) {
-      return initRow(element);
-    }).toList();
-
-    this._instance = Table(
-      children: rows,
-    );
-  }
+  SummaryTableState(this.data);
 
   List<TableRow> setupHeader() {
     List<Column> headerElements = this.columns.map((column) {
@@ -120,7 +126,21 @@ class SummaryTable {
     );
   }
 
-  Table getInstance() {
-    return this._instance;
+
+  @override
+  Widget build(BuildContext context) {
+    List<TableRow> rows = setupHeader() + this.data.map((Statistic element) {
+      return initRow(element);
+    }).toList();
+
+    return Table(
+      children: rows,
+    );
+  }
+
+  void updateTableData(List<Statistic> data) {
+    setState(() {
+      this.data = data;
+    });
   }
 }

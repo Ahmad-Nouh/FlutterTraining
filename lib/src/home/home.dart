@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/models/Statistic.dart';
 import 'package:flutter_app/src/home/table.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,10 @@ class MyHome extends StatefulWidget {
 }
 
 class MyHomeState extends State<MyHome> {
+  bool isSearch = true;
+  List<Statistic> countriesStatistics = [];
+  StreamBuilder<http.Response> streamBuilder;
+
 
   TableRow initRow() {
     return TableRow(
@@ -69,35 +74,32 @@ class MyHomeState extends State<MyHome> {
 
     return decodedData;
   }
-
   @override
-  Widget build(BuildContext context) {
-    StreamBuilder<http.Response> streamBuilder = new StreamBuilder(
+  void initState() {
+    // init stream builder
+    this.streamBuilder = StreamBuilder(
       stream: Stream.fromFuture(http.get('https://api.covid19api.com/summary')),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         switch (snapshot.connectionState) {
-          // ignore: missing_return
           case ConnectionState.waiting:
-            print(snapshot.data);
             return Dialog(
-            child: Container(
-              child: Row(
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  Container(
-                    child: Text('Please Wait..'),
-                    margin: EdgeInsets.only(left: 20),
-                  )
-                ],
-              ),
-              padding: EdgeInsets.all(30.0),
-            )
-          );
+                child: Container(
+                  child: Row(
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Container(
+                        child: Text('Please Wait..'),
+                        margin: EdgeInsets.only(left: 20),
+                      )
+                    ],
+                  ),
+                  padding: EdgeInsets.all(30.0),
+                )
+            );
           case ConnectionState.done:
           case ConnectionState.active:
-            List<Statistic> summaryData = decodeData(json.decode(snapshot.data.body));
-            SummaryTable summaryTable = new SummaryTable(summaryData);
-            return SingleChildScrollView(child: summaryTable.getInstance(),);
+            this.countriesStatistics = decodeData(json.decode(snapshot.data.body));
+            return SingleChildScrollView(child: SummaryTable(this.countriesStatistics),);
           case ConnectionState.none:
             return Center(child: Text('Nothing to show'),);
           default:
@@ -105,15 +107,37 @@ class MyHomeState extends State<MyHome> {
         }
       },
     );
+
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('First App'),
+          title: this.isSearch ?
+              Text('Corona Statistics') :
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search By Country Name...'
+                ),
+                onChanged: (String text) {
+                  SummaryTable.of(context).updateTableData(
+                      this.countriesStatistics.where((Statistic item) => item.country.startsWith(text)).toList()
+                  );
+                },
+              ),
           backgroundColor: Colors.blue,
+          actions: <Widget>[
+            this.isSearch ?
+              IconButton(icon: Icon(Icons.search), onPressed: () => setState(() => this.isSearch = false)) :
+              IconButton(icon: Icon(Icons.cancel), onPressed: () => setState(() => this.isSearch = true))
+
+          ],
         ),
         body: Container(
           margin: EdgeInsets.all(10),
-          child: streamBuilder,
+          child: this.streamBuilder,
         ),
       ),
       theme: ThemeData.dark(),
